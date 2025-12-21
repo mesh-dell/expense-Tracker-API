@@ -12,9 +12,9 @@ type RefreshTokenService struct {
 	repo repository.RefreshTokenRepository
 }
 
-func NewRefreshTokenService(r repository.RefreshTokenRepository) *RefreshTokenService {
+func NewRefreshTokenService(r *repository.RefreshTokenRepository) *RefreshTokenService {
 	return &RefreshTokenService{
-		repo: r,
+		repo: *r,
 	}
 }
 

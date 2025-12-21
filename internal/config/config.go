@@ -15,6 +15,8 @@ type Config struct {
 	AccessSecret  string
 	RefreshSecret string
 	Port          string
+	AccessExpiry  int
+	RefreshExpiry int
 }
 
 func LoadConfig() (Config, error) {
@@ -27,6 +29,8 @@ func LoadConfig() (Config, error) {
 		AccessSecret:  os.Getenv("ACCESS_SECRET"),
 		RefreshSecret: os.Getenv("REFRESH_SECRET"),
 		Port:          os.Getenv("PORT"),
+		AccessExpiry:  3600,
+		RefreshExpiry: 604800,
 	}
 	if err != nil {
 		return cfg, err

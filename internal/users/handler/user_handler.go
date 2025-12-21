@@ -15,12 +15,12 @@ import (
 )
 
 type UserHandler struct {
-	userSvc    service.UserService
-	refreshSvc service.RefreshTokenService
+	userSvc    *service.UserService
+	refreshSvc *service.RefreshTokenService
 	cfg        config.Config
 }
 
-func NewUserHandler(u service.UserService, cfg config.Config, r service.RefreshTokenService) *UserHandler {
+func NewUserHandler(u *service.UserService, cfg config.Config, r *service.RefreshTokenService) *UserHandler {
 	return &UserHandler{
 		userSvc:    u,
 		cfg:        cfg,
@@ -119,12 +119,14 @@ func (h *UserHandler) RefreshToken(c *gin.Context) {
 		c.IndentedJSON(http.StatusUnauthorized, gin.H{"error": "missing refresh token"})
 		return
 	}
-	parsed, err := jwt.Parse(ref, func(t *jwt.Token) (any, error) { return []byte(h.cfg.RefreshSecret), nil })
+	claims := &jwt.StandardClaims{}
+	parsed, err := jwt.ParseWithClaims(ref, claims, func(t *jwt.Token) (any, error) {
+		return []byte(h.cfg.RefreshSecret), nil
+	})
 	if err != nil || !parsed.Valid {
 		c.IndentedJSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
 		return
 	}
-	claims := parsed.Claims.(*jwt.StandardClaims)
 	stored, ok := h.refreshSvc.ValidateRefreshToken(c.Request.Context(), claims.Id)
 	if !ok {
 		c.IndentedJSON(http.StatusUnauthorized, gin.H{"error": "refresh revoked or expired"})
