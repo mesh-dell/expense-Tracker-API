@@ -105,8 +105,8 @@ func (h *ExpenseHandler) FindAllForUser(c *gin.Context) {
 	case "3months":
 		filter = PastThreeMonths()
 	case "custom":
-		start, _ := time.Parse("2006-01-02", c.Query("start"))
-		end, _ := time.Parse("2006-01-02", c.Query("end"))
+		start, _ := time.Parse(time.RFC3339Nano, c.Query("start"))
+		end, _ := time.Parse(time.RFC3339Nano, c.Query("end"))
 		filter = CustomRange(start, end)
 	}
 
@@ -198,18 +198,21 @@ func (h *ExpenseHandler) Update(c *gin.Context) {
 }
 
 func PastWeek() dtos.ExpenseFilter {
+	now := time.Now()
 	start := time.Now().AddDate(0, 0, -7)
-	return dtos.ExpenseFilter{StartDate: &start}
+	return dtos.ExpenseFilter{StartDate: &start, EndDate: &now}
 }
 
 func PastMonth() dtos.ExpenseFilter {
+	now := time.Now()
 	start := time.Now().AddDate(0, -1, 0)
-	return dtos.ExpenseFilter{StartDate: &start}
+	return dtos.ExpenseFilter{StartDate: &start, EndDate: &now}
 }
 
 func PastThreeMonths() dtos.ExpenseFilter {
+	now := time.Now()
 	start := time.Now().AddDate(0, -3, 0)
-	return dtos.ExpenseFilter{StartDate: &start}
+	return dtos.ExpenseFilter{StartDate: &start, EndDate: &now}
 }
 
 func CustomRange(start, end time.Time) dtos.ExpenseFilter {
