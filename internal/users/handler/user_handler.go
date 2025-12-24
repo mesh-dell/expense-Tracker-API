@@ -167,3 +167,19 @@ func (h *UserHandler) GetMe(c *gin.Context) {
 		},
 	})
 }
+
+func (h *UserHandler) Logout(c *gin.Context) {
+	ref, _ := c.Cookie("refresh_token")
+	if ref != "" {
+		var claims jwt.StandardClaims
+		_, err := jwt.ParseWithClaims(ref, &claims, func(t *jwt.Token) (any, error) {
+			return []byte(h.cfg.RefreshSecret), nil
+		})
+		if err == nil {
+			_ = h.refreshSvc.Delete(c.Request.Context(), claims.Id)
+		}
+	}
+	c.SetCookie("access_token", "", -1, "/", "", true, true)
+	c.SetCookie("refresh_token", "", -1, "/", "", true, true)
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "logged out successfully"})
+}

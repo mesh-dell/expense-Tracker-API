@@ -51,20 +51,29 @@ func InitServer(cfg config.Config) {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
-	protected := router.Group("/expenses")
-	protected.Use(middleware.AuthMiddleware(cfg))
+
+	authGroup := router.Group("/auth")
 	{
-		protected.POST("", expenseHandler.Create)
-		protected.GET("/:id", expenseHandler.FindById)
-		protected.GET("", expenseHandler.FindAllForUser)
-		protected.PUT("/:id", expenseHandler.Update)
-		protected.DELETE("/:id", expenseHandler.Delete)
+		authGroup.POST("/login", userHandler.Login)
+		authGroup.POST("/register", userHandler.Register)
+		authGroup.POST("/token/refresh", userHandler.RefreshToken)
+		authGroup.POST("/logout", userHandler.Logout)
 	}
-	// auth routes
-	router.POST("/login", userHandler.Login)
-	router.POST("/register", userHandler.Register)
-	router.POST("/token/refresh", userHandler.RefreshToken)
-	router.Use(middleware.AuthMiddleware(cfg))
-	router.GET("/me", userHandler.GetMe)
+
+	api := router.Group("/")
+	api.Use(middleware.AuthMiddleware(cfg))
+	{
+		api.GET("/me", userHandler.GetMe)
+
+		expensesGroup := router.Group("/expenses")
+		{
+			expensesGroup.POST("", expenseHandler.Create)
+			expensesGroup.GET("/:id", expenseHandler.FindById)
+			expensesGroup.GET("", expenseHandler.FindAllForUser)
+			expensesGroup.PUT("/:id", expenseHandler.Update)
+			expensesGroup.DELETE("/:id", expenseHandler.Delete)
+		}
+	}
+
 	router.Run(":" + cfg.Port)
 }

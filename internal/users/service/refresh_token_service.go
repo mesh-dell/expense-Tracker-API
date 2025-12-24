@@ -22,6 +22,10 @@ func (svc *RefreshTokenService) Save(ctx context.Context, tokens *users.Tokens) 
 	return svc.repo.Save(ctx, tokens)
 }
 
+func (svc *RefreshTokenService) Delete(ctx context.Context, jti string) error {
+	return svc.repo.Delete(ctx, jti)
+}
+
 func (svc *RefreshTokenService) RotateRefreshToken(ctx context.Context, oldJTI string, newTokens *users.Tokens) error {
 	_ = svc.repo.Delete(ctx, oldJTI)
 	return svc.Save(ctx, newTokens)
