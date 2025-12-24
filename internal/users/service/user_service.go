@@ -54,3 +54,7 @@ func (svc *UserService) Register(ctx context.Context, req dtos.RegisterRequest) 
 	}
 	return user, nil
 }
+
+func (svc *UserService) GetMe(ctx context.Context, userID uint) (users.User, error) {
+	return svc.repo.FindUserByID(ctx, userID)
+}

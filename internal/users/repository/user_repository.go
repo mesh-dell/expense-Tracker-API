@@ -12,6 +12,11 @@ type UserRepository struct {
 	db *gorm.DB
 }
 
+// FindUserByID implements [IUserRepository].
+func (r *UserRepository) FindUserByID(ctx context.Context, userID uint) (users.User, error) {
+	return gorm.G[users.User](r.db).Where("id = ?", userID).First(ctx)
+}
+
 // CreateUser implements [IUserRepository].
 func (r *UserRepository) CreateUser(ctx context.Context, user *users.User) error {
 	return gorm.G[users.User](r.db).Create(ctx, user)

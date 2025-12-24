@@ -144,3 +144,26 @@ func (h *UserHandler) RefreshToken(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, gin.H{"ok": "refreshed token successfully"})
 }
+
+func (h *UserHandler) GetMe(c *gin.Context) {
+	userIDAny, exists := c.Get("userID")
+	if !exists {
+		c.IndentedJSON(http.StatusUnauthorized, gin.H{"user": nil})
+		return
+	}
+	userID := userIDAny.(uint)
+
+	user, err := h.userSvc.GetMe(c.Request.Context(), userID)
+	if err != nil {
+		c.IndentedJSON(http.StatusUnauthorized, gin.H{"user": nil})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, gin.H{
+		"user": gin.H{
+			"id":    user.ID,
+			"email": user.Email,
+			"name":  user.Name,
+		},
+	})
+}
