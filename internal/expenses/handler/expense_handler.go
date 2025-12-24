@@ -187,7 +187,6 @@ func (h *ExpenseHandler) Update(c *gin.Context) {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Println(*expense)
 	c.IndentedJSON(http.StatusOK, dtos.ExpenseResponseDto{
 		ID:       expense.ID,
 		Title:    expense.Title,

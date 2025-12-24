@@ -36,6 +36,13 @@ func InitServer(cfg config.Config) {
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"http://localhost:3000"},
+		AllowMethods: []string{
+			"GET",
+			"POST",
+			"PUT",
+			"DELETE",
+			"OPTIONS",
+		},
 		AllowHeaders: []string{
 			"Origin",
 			"Content-Type",
@@ -57,5 +64,7 @@ func InitServer(cfg config.Config) {
 	router.POST("/login", userHandler.Login)
 	router.POST("/register", userHandler.Register)
 	router.POST("/token/refresh", userHandler.RefreshToken)
+	router.Use(middleware.AuthMiddleware(cfg))
+	router.GET("/me", userHandler.GetMe)
 	router.Run(":" + cfg.Port)
 }
