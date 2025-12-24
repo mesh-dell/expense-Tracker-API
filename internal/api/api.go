@@ -65,7 +65,7 @@ func InitServer(cfg config.Config) {
 	{
 		api.GET("/me", userHandler.GetMe)
 
-		expensesGroup := router.Group("/expenses")
+		expensesGroup := api.Group("/expenses")
 		{
 			expensesGroup.POST("", expenseHandler.Create)
 			expensesGroup.GET("/:id", expenseHandler.FindById)
