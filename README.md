@@ -1,6 +1,6 @@
 # Expense Tracker API
 
-A RESTful Expense Tracker API built with **Go**, **GORM**, and **JWT**, following **Clean Architecture** principles.
+A RESTful Expense Tracker API built with **Go**, **Gin** **GORM**, and **JWT**, following **Clean Architecture** principles.
 
 ---
 
@@ -17,7 +17,7 @@ A RESTful Expense Tracker API built with **Go**, **GORM**, and **JWT**, followin
 
 ## Tech Stack
 
-* Go
+* Go, Gin
 * MySQL
 * GORM
 * JWT
