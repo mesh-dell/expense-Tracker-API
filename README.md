@@ -22,6 +22,12 @@ A RESTful Expense Tracker API built with **Go**, **GORM**, and **JWT**, followin
 * GORM
 * JWT
 
+Feature / Domain	Technical Implementation	Engineering Value
+Architecture	Go Clean Architecture (domain / service / repo / handler)	Enforces separation of concerns and testability
+Authentication	Dual JWT + Refresh Token Rotation via JTI tracking	Prevents session hijacking and replay attacks
+Expense Querying	Dynamic filtering (1W, 1M, 3M, Custom Date Ranges)	Delivers flexible, efficient time-series aggregation
+Data Layer	GORM ORM + MySQL Relational Database	Ensures schema safety and clean data access layers
+
 ---
 
 ## Project Structure
